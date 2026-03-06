@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Flipbook Mobile</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* container do flip ocupa a tela */
+    #flip {
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+    }
+
+    /* cada "página" */
+    .page {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    .page img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill; /* <- cobre 100% (pode distorcer, como você pediu) */
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+  </style>
+
+  <!-- StPageFlip via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+</head>
+
+<body>
+  <div id="flip">
+    <!-- As páginas (ordem 1..8) -->
+    <div class="page"><img src="../img/1.jpeg" alt="1"></div>
+    <div class="page"><img src="../img/2.jpeg" alt="2"></div>
+    <div class="page"><img src="../img/3.jpeg" alt="3"></div>
+    <div class="page"><img src="../img/4.jpeg" alt="4"></div>
+    <div class="page"><img src="../img/5.jpeg" alt="5"></div>
+    <div class="page"><img src="../img/6.jpeg" alt="6"></div>
+    <div class="page"><img src="../img/7.jpeg" alt="7"></div>
+    <div class="page"><img src="../img/8.jpg"  alt="8"></div>
+  </div>
+
+    <script>
+    window.addEventListener('load', () => {
+        const container = document.getElementById('flip');
+
+        const settings = {
+        size: "stretch",
+        width: container.clientWidth,
+        height: container.clientHeight,
+
+        maxShadowOpacity: 0.35,
+        showCover: false,
+        mobileScrollSupport: false,
+        useMouseEvents: true,
+
+        // FORÇA o layout como "portrait" e single em ambos cenários
+        layout: "portrait",
+        portrait: { display: "single" },
+        landscape: { display: "single" },
+
+        // opcional (só pra deixar mais “suave”)
+        flippingTime: 600
+        };
+
+        const pageFlip = new St.PageFlip(container, settings);
+        pageFlip.loadFromHTML(document.querySelectorAll('#flip .page'));
+
+        // Hard lock: em resize/orientation, reaplica settings e mantém single
+        const apply = () => {
+        pageFlip.update({
+            ...settings,
+            width: container.clientWidth,
+            height: container.clientHeight,
+            layout: "portrait",
+            portrait: { display: "single" },
+            landscape: { display: "single" }
+        });
+        };
+
+        window.addEventListener('resize', apply);
+        window.addEventListener('orientationchange', apply);
+
+        // aplica uma vez após 1 frame (evita “piscar”)
+        requestAnimationFrame(apply);
+    });
+    </script>
+</body>
+</html>
