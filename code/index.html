@@ -1,103 +1,254 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Cardápio</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Cardápio</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #000;
-    }
+    <style>
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            background: #000;
+        }
 
-    /* container do flip ocupa a tela */
-    #flip {
-      width: 100vw;
-      height: 100vh;
-      margin: 0;
-    }
+        #flip {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            margin: 0;
+        }
 
-    /* cada "página" */
-    .page {
-      width: 100%;
-      height: 100%;
-      background: #000;
-    }
+        /* cada "página" */
+        .page {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
 
-    .page img {
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: fill; /* <- cobre 100% (pode distorcer, como você pediu) */
-      user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
-  </style>
+        .page img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: fill;
+            /* <- cobre 100% (pode distorcer, como você pediu) */
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
 
-  <!-- StPageFlip via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+        /* Página com overlay (para elementos clicáveis por cima da imagem) */
+        .page.page--overlay {
+            position: relative;
+        }
+
+        /* imagem de fundo da página 8 */
+        .page.page--overlay img.bg {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            /* mantém seu comportamento de esticar */
+            display: block;
+        }
+
+        /* Área de conteúdo por cima (clicável) */
+        .page .overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            /* só o botão recebe clique */
+        }
+
+        .page .overlay .btn-ig {
+            pointer-events: auto;
+            position: absolute;
+
+            left: 50%;
+            transform: translateX(-50%);
+
+            /* posição: ajuste fino aqui */
+            bottom: 11dvh;
+            width: min(85%, 440px);
+            padding: 1.7dvh 4.5vw;
+            font-size: clamp(16px, 2.15dvh, 22px);
+
+            text-align: center;
+            text-decoration: none;
+
+            /* Paleta “doceria” */
+            background: linear-gradient(180deg, #7a4a2a 0%, #5e361f 100%);
+            color: #fff3e6;
+
+            border-radius: 999px;
+            border: 2px solid rgba(255, 214, 223, 0.9);
+            /* rosinha suave */
+
+            box-shadow:
+                0 10px 20px rgba(0, 0, 0, .18),
+                inset 0 1px 0 rgba(255, 255, 255, .18);
+
+            font-weight: 800;
+        }
+
+        .page .overlay .btn-ig:hover {
+            filter: brightness(1.04);
+        }
+
+        .page .overlay .btn-ig:active {
+            transform: translateX(-50%) scale(0.98);
+            filter: brightness(0.98);
+        }
+
+        .page .overlay .btn-ig::before {
+            content: "";
+            position: absolute;
+            inset: -10px -14px;
+            background: radial-gradient(circle, rgba(255, 214, 223, .55), rgba(255, 214, 223, 0) 70%);
+            z-index: -1;
+        }
+        @media (orientation: landscape) {
+        .page .overlay .btn-ig {
+            width: min(78%, 320px);
+            padding: 1.4dvh 3.5vw;
+            font-size: clamp(14px, 1.9dvh, 18px);
+            bottom: 7dvh;
+        }
+        }
+    </style>
+
+    <!-- StPageFlip via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
 </head>
 
 <body>
-  <div id="flip">
-    <!-- As páginas (ordem 1..8) -->
-    <div class="page"><img src="../img/1.jpeg" alt="1"></div>
-    <div class="page"><img src="../img/2.jpeg" alt="2"></div>
-    <div class="page"><img src="../img/3.jpeg" alt="3"></div>
-    <div class="page"><img src="../img/4.jpeg" alt="4"></div>
-    <div class="page"><img src="../img/5.jpeg" alt="5"></div>
-    <div class="page"><img src="../img/6.jpeg" alt="6"></div>
-    <div class="page"><img src="../img/7.jpeg" alt="7"></div>
-    <div class="page"><img src="../img/8.jpg"  alt="8"></div>
-  </div>
+    <div id="flip-root">
+        <div id="flip">
+            <!-- As páginas (ordem 1..8) -->
+            <div class="page"><img src="../img/1.jpeg" alt="1"></div>
+            <div class="page"><img src="../img/2.jpeg" alt="2"></div>
+            <div class="page"><img src="../img/3.jpeg" alt="3"></div>
+            <div class="page"><img src="../img/4.jpeg" alt="4"></div>
+            <div class="page"><img src="../img/5.jpeg" alt="5"></div>
+            <div class="page"><img src="../img/6.jpeg" alt="6"></div>
+            <div class="page"><img src="../img/7.jpeg" alt="7"></div>
+            <div class="page page--overlay">
+                <img class="bg" src="../img/8.jpg" alt="8">
+                <div class="overlay">
+                    <a class="btn-ig" href="https://www.instagram.com/dulcitos.toneli" target="_blank" rel="noopener">
+                        @dulcitos.toneli
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         window.addEventListener('load', () => {
-        const container = document.getElementById('flip');
+        const root = document.getElementById('flip-root');
 
-        const build = () => {
-            const W = Math.floor(container.clientWidth);
-            const H = Math.floor(container.clientHeight);
+        // pega o HTML das páginas uma vez (do flip atual)
+        const initialFlip = document.getElementById('flip');
+        const pagesHTML = initialFlip.innerHTML;
 
-            // Base de 1 página (portrait): largura da tela toda / 1 página
-            // (a ideia é impedir a lib de “achar” que cabe 2 páginas)
-            const pageW = W;
+        let pf = null;
+        let currentPage = 0;
+        let timer = null;
+
+        function dims(el) {
+            const r = el.getBoundingClientRect();
+            return { w: Math.round(r.width), h: Math.round(r.height) };
+        }
+
+        function freshContainer() {
+            // remove o flip antigo completamente (equivalente a "hard reset" do DOM)
+            const old = document.getElementById('flip');
+            if (old) old.remove();
+
+            const fresh = document.createElement('div');
+            fresh.id = 'flip';
+            fresh.style.width = '100vw';
+            fresh.style.height = '100dvh';
+            fresh.style.margin = '0';
+            fresh.innerHTML = pagesHTML;
+            root.appendChild(fresh);
+
+            return fresh;
+        }
+
+        function create() {
+            const container = document.getElementById('flip') || freshContainer();
+
+            const { w: W, h: H } = dims(container);
+            if (W < 10 || H < 10) return false;
+
+            const isLandscape = W > H;
+            const pageW = isLandscape ? Math.floor(W / 2) : W;
             const pageH = H;
 
-           const pageFlip = new St.PageFlip(container, {
+            if (pageW < 10 || pageH < 10) return false;
+
+            pf = new St.PageFlip(container, {
             width: pageW,
             height: pageH,
             size: "stretch",
             usePortrait: true,
-            minWidth: pageW,
-            maxWidth: pageW,
-            minHeight: pageH,
-            maxHeight: pageH,
+
+            minWidth: 320,
+            maxWidth: 5000,
+            minHeight: 320,
+            maxHeight: 5000,
+
             showCover: true,
             mobileScrollSupport: false,
             maxShadowOpacity: 0.35,
             flippingTime: 600
             });
 
-            pageFlip.loadFromHTML(document.querySelectorAll('#flip .page'));
-            return pageFlip;
-        };
+            pf.loadFromHTML(container.querySelectorAll('.page'));
 
-        let pf = build();
+            try { pf.turnToPage(currentPage); } catch(e) {}
+            return true;
+        }
 
-        const rebuild = () => {
-            try { pf.destroy(); } catch(e) {}
-            pf = build();
-        };
+        function hardRebuild() {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+            // salva página atual
+            try { currentPage = pf ? pf.getCurrentPageIndex() : 0; } catch(e) { currentPage = 0; }
 
-        window.addEventListener('resize', () => setTimeout(rebuild, 80));
-        window.addEventListener('orientationchange', () => setTimeout(rebuild, 80));
+            // destrói instância antiga
+            try { pf && pf.destroy(); } catch(e) {}
+
+            // cria um container novo do zero
+            const container = freshContainer();
+
+            // tenta criar até estabilizar
+            let tries = 0;
+            const loop = () => {
+                tries++;
+                if (create()) return;
+                if (tries < 120) requestAnimationFrame(loop);
+            };
+            requestAnimationFrame(loop);
+
+            }, 250);
+        }
+
+        // inicial
+        hardRebuild();
+
+        window.addEventListener('orientationchange', hardRebuild);
+        window.addEventListener('resize', hardRebuild);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) hardRebuild();
+        });
         });
     </script>
 </body>
+
 </html>
