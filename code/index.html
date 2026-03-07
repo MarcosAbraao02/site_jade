@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Flipbook Mobile</title>
+  <title>Cardápio</title>
 
   <style>
     html, body {
@@ -57,49 +57,47 @@
   </div>
 
     <script>
-    window.addEventListener('load', () => {
+        window.addEventListener('load', () => {
         const container = document.getElementById('flip');
 
-        const settings = {
-        size: "stretch",
-        width: container.clientWidth,
-        height: container.clientHeight,
+        const build = () => {
+            const W = Math.floor(container.clientWidth);
+            const H = Math.floor(container.clientHeight);
 
-        maxShadowOpacity: 0.35,
-        showCover: false,
-        mobileScrollSupport: false,
-        useMouseEvents: true,
+            // Base de 1 página (portrait): largura da tela toda / 1 página
+            // (a ideia é impedir a lib de “achar” que cabe 2 páginas)
+            const pageW = W;
+            const pageH = H;
 
-        // FORÇA o layout como "portrait" e single em ambos cenários
-        layout: "portrait",
-        portrait: { display: "single" },
-        landscape: { display: "single" },
+           const pageFlip = new St.PageFlip(container, {
+            width: pageW,
+            height: pageH,
+            size: "stretch",
+            usePortrait: true,
+            minWidth: pageW,
+            maxWidth: pageW,
+            minHeight: pageH,
+            maxHeight: pageH,
+            showCover: true,
+            mobileScrollSupport: false,
+            maxShadowOpacity: 0.35,
+            flippingTime: 600
+            });
 
-        // opcional (só pra deixar mais “suave”)
-        flippingTime: 600
+            pageFlip.loadFromHTML(document.querySelectorAll('#flip .page'));
+            return pageFlip;
         };
 
-        const pageFlip = new St.PageFlip(container, settings);
-        pageFlip.loadFromHTML(document.querySelectorAll('#flip .page'));
+        let pf = build();
 
-        // Hard lock: em resize/orientation, reaplica settings e mantém single
-        const apply = () => {
-        pageFlip.update({
-            ...settings,
-            width: container.clientWidth,
-            height: container.clientHeight,
-            layout: "portrait",
-            portrait: { display: "single" },
-            landscape: { display: "single" }
+        const rebuild = () => {
+            try { pf.destroy(); } catch(e) {}
+            pf = build();
+        };
+
+        window.addEventListener('resize', () => setTimeout(rebuild, 80));
+        window.addEventListener('orientationchange', () => setTimeout(rebuild, 80));
         });
-        };
-
-        window.addEventListener('resize', apply);
-        window.addEventListener('orientationchange', apply);
-
-        // aplica uma vez após 1 frame (evita “piscar”)
-        requestAnimationFrame(apply);
-    });
     </script>
 </body>
 </html>
