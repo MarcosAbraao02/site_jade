@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Evolução — Marcos Abraão</title>
+<style>
+  :root{
+    --navy:#242f7d;
+    --navy-deep:#141a4d;
+    --navy-bg:#0d1238;
+    --yellow:#ffe500;
+    --white:#ffffff;
+    /* Família "Rep de Envio" — amarelos */
+    --env-1:#fff7b0;
+    --env-2:#ffe500;
+    --env-3:#ffc400;
+    /* Família "Operador Logístico" — azuis */
+    --log-1:#74d2ff;
+    --log-2:#2f9be6;
+    /* Cargo atual — destaque branco/dourado */
+    --asis:#ffffff;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    background:var(--navy-bg);
+    font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+    color:#fff;
+    min-height:100%;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:36px 24px;
+  }
+
+  .card{
+    width:100%;
+    max-width:1040px;
+    position:relative;
+    overflow:hidden;
+    border-radius:30px;
+    padding:42px 52px 46px;
+    background:
+      radial-gradient(130% 120% at 82% -10%, #36459f 0%, var(--navy) 42%, var(--navy-deep) 100%);
+    box-shadow:0 36px 90px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+  /* brilho decorativo de canto */
+  .card::before{
+    content:"";position:absolute;top:-150px;right:-130px;
+    width:380px;height:380px;border-radius:50%;
+    background:radial-gradient(circle, rgba(255,229,0,.20), transparent 68%);
+    pointer-events:none;
+  }
+  .card::after{
+    content:"";position:absolute;bottom:-160px;left:-120px;
+    width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(circle, rgba(116,210,255,.16), transparent 70%);
+    pointer-events:none;
+  }
+
+  .header{position:relative;z-index:3;}
+  .eyebrow{
+    color:var(--yellow);
+    font-size:12.5px;font-weight:700;letter-spacing:3.5px;
+    text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{
+    content:"";width:26px;height:3px;border-radius:2px;background:var(--yellow);
+  }
+  .title{
+    font-size:clamp(28px,4.4vw,44px);
+    font-weight:800;line-height:1.03;margin-top:10px;letter-spacing:-.5px;
+  }
+  .title .accent{color:var(--yellow);}
+  .subtitle{
+    color:rgba(255,255,255,.66);
+    font-size:15px;margin-top:10px;font-weight:500;
+  }
+
+  /* área do gráfico */
+  .plot{
+    position:relative;
+    width:100%;
+    height:540px;
+    margin-top:18px;
+    z-index:2;
+  }
+  .line-svg{
+    position:absolute;inset:0;width:100%;height:100%;
+    overflow:visible;
+    filter:drop-shadow(0 6px 16px rgba(0,0,0,.35));
+  }
+  .track{
+    fill:none;stroke:rgba(255,255,255,.10);
+    stroke-width:9;stroke-linecap:round;stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+  }
+  .progress{
+    fill:none;stroke:url(#journey);
+    stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;
+    vector-effect:non-scaling-stroke;
+    pathLength:1;
+    stroke-dasharray:1;stroke-dashoffset:1;
+    animation:draw 1.9s cubic-bezier(.65,.02,.27,1) .25s forwards;
+  }
+  .future{
+    fill:none;stroke:rgba(255,255,255,.32);
+    stroke-width:2.4;stroke-linecap:round;
+    stroke-dasharray:1 7;
+    vector-effect:non-scaling-stroke;
+    opacity:0;animation:fade 1s ease 2.2s forwards;
+  }
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @keyframes fade{to{opacity:1;}}
+
+  /* nós (cargos) */
+  .node{position:absolute;transform:translate(-50%,-50%);z-index:4;}
+  .dot{
+    width:24px;height:24px;border-radius:50%;
+    border:4px solid rgba(255,255,255,.92);
+    position:relative;
+    transform:scale(0);
+    animation:pop .55s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes pop{to{transform:scale(1);}}
+  .dot.env{box-shadow:0 0 0 6px rgba(255,229,0,.12), 0 0 20px 3px rgba(255,229,0,.55);}
+  .dot.log{box-shadow:0 0 0 6px rgba(116,210,255,.14), 0 0 20px 3px rgba(116,210,255,.55);}
+  .dot.asis{box-shadow:0 0 0 7px rgba(255,255,255,.16), 0 0 26px 6px rgba(255,229,0,.7);}
+  .dot.asis::before{
+    content:"";position:absolute;inset:-4px;border-radius:50%;
+    border:2px solid rgba(255,229,0,.85);
+    animation:ring 2.4s ease-out infinite;
+  }
+  @keyframes ring{
+    0%{transform:scale(1);opacity:.8;}
+    100%{transform:scale(2.4);opacity:0;}
+  }
+
+  .label{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:160px;text-align:center;
+    opacity:0;animation:rise .6s ease forwards;
+  }
+  @keyframes rise{from{opacity:0;transform:translateX(-50%) translateY(8px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+  .label.above{bottom:30px;}
+  .label.below{top:30px;}
+  .label .role{font-size:15.5px;font-weight:700;line-height:1.18;}
+  .label .date{
+    color:var(--yellow);font-size:12px;font-weight:700;letter-spacing:1.5px;
+    text-transform:uppercase;margin-top:4px;
+  }
+  .label.above::after,.label.below::after{
+    content:"";position:absolute;left:50%;width:2px;height:14px;
+    transform:translateX(-50%);
+    background:linear-gradient(rgba(255,255,255,.5),rgba(255,255,255,0));
+  }
+  .label.above::after{top:100%;}
+  .label.below::after{bottom:100%;background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,.5));}
+
+  /* legenda */
+  .legend{
+    position:relative;z-index:3;
+    display:flex;flex-wrap:wrap;gap:22px;
+    margin-top:6px;padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.10);
+  }
+  .legend span{display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.78);font-weight:600;}
+  .legend i{width:13px;height:13px;border-radius:50%;display:inline-block;}
+  .legend .meta{margin-left:auto;color:rgba(255,255,255,.55);font-weight:600;}
+
+  @media(max-width:640px){
+    .card{padding:30px 24px 34px;border-radius:22px;}
+    .plot{height:600px;}
+    .label{width:120px;}
+    .label .role{font-size:13.5px;}
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="eyebrow">Trajetória no Mercado Livre</div>
+      <h1 class="title"><span class="accent">Minha evolução</span></h1>
+    </div>
+
+    <div class="plot">
+      <svg class="line-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="journey" gradientUnits="userSpaceOnUse" x1="6" y1="80" x2="94" y2="16">
+            <stop offset="0%"  stop-color="#fff7b0"/>
+            <stop offset="26%" stop-color="#ffe500"/>
+            <stop offset="44%" stop-color="#ffc400"/>
+            <stop offset="56%" stop-color="#74d2ff"/>
+            <stop offset="80%" stop-color="#2f9be6"/>
+            <stop offset="100%" stop-color="#ffffff"/>
+          </linearGradient>
+        </defs>
+        <polyline class="track"    points="6,80 24,66 44,54 62,42 80,30 94,16"/>
+        <polyline class="progress" points="6,80 24,66 44,54 62,42 80,30 94,16"/>
+        <polyline class="future"   points="94,16 100,11"/>
+      </svg>
+
+      <div class="node" style="left:6%;top:80%;">
+        <div class="label below" style="animation-delay:.5s;">
+          <div class="role">Rep de Envio 1</div>
+          <div class="date">Out 21</div>
+        </div>
+        <div class="dot env" style="background:var(--env-1);animation-delay:.4s;"></div>
+      </div>
+
+      <div class="node" style="left:24%;top:66%;">
+        <div class="label above" style="animation-delay:.75s;">
+          <div class="role">Rep de Envio 2</div>
+          <div class="date">Nov 22</div>
+        </div>
+        <div class="dot env" style="background:var(--env-2);animation-delay:.65s;"></div>
+      </div>
+
+      <div class="node" style="left:44%;top:54%;">
+        <div class="label below" style="animation-delay:1s;">
+          <div class="role">Rep de Envio 3</div>
+          <div class="date">Ago 23</div>
+        </div>
+        <div class="dot env" style="background:var(--env-3);animation-delay:.9s;"></div>
+      </div>
+
+      <div class="node" style="left:62%;top:42%;">
+        <div class="label above" style="animation-delay:1.25s;">
+          <div class="role">Operador Logístico 1</div>
+          <div class="date">Fev 25</div>
+        </div>
+        <div class="dot log" style="background:var(--log-1);animation-delay:1.15s;"></div>
+      </div>
+
+      <div class="node" style="left:80%;top:30%;">
+        <div class="label below" style="animation-delay:1.5s;">
+          <div class="role">Operador Logístico 2</div>
+          <div class="date">Ago 25</div>
+        </div>
+        <div class="dot log" style="background:var(--log-2);animation-delay:1.4s;"></div>
+      </div>
+
+      <div class="node" style="left:94%;top:16%;">
+        <div class="label above" style="animation-delay:1.75s;">
+          <div class="role">Asistente</div>
+          <div class="date">Set 25</div>
+        </div>
+        <div class="dot asis" style="background:var(--asis);animation-delay:1.65s;"></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:var(--env-2);"></i>Rep de Envio</span>
+      <span><i style="background:var(--log-1);"></i>Operador Logístico</span>
+      <span><i style="background:#fff;box-shadow:0 0 8px var(--yellow);"></i>Asistente · cargo atual</span>
+    </div>
+  </div>
+</body>
+</html>
