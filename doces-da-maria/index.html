@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F2E7D3">
+<title>Doces da Maria – Cardápio</title>
+<link rel="icon" href="imgs/banner%20quadrado.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --creme: #F2E7D3;        /* fundo do logo */
+    --creme-claro: #FBF6EC;  /* cards */
+    --chocolate: #5B2E1F;    /* tigela / letras */
+    --chocolate-suave: #8A6555;
+    --morango: #C4604A;      /* morango */
+    --dourado: #C9A35A;      /* pontinhos da coroa */
+    --linha: rgba(91, 46, 31, .14);
+    --serif: "Marcellus", Georgia, "Times New Roman", serif;
+    --sans: "Jost", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --raio: 16px;
+    --suave: cubic-bezier(.2, .7, .2, 1);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; scroll-padding-top: 48px; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; color: var(--chocolate); font-family: var(--sans); -webkit-font-smoothing: antialiased;
+    background-color: var(--creme);
+    /* textura sutil de pontinhos dourados, como os da coroa do logo */
+    background-image: radial-gradient(rgba(201, 163, 90, .16) 1px, transparent 1.4px);
+    background-size: 20px 20px;
+  }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Topo: banner horizontal recortado só na área do logo ----------
+     Banner 1200×896; recorte x 168–1048 (880) e y 210–618 (408), medido na imagem. */
+  /* fundo liso no topo (sem a textura) para o banner se fundir com a página */
+  .topo { padding: max(8px, env(safe-area-inset-top)) 0 2px; background: #F1E6D2; }
+  .hero {
+    position: relative; overflow: hidden; margin: 0 auto;
+    aspect-ratio: 880 / 408;
+    width: min(100% - 32px, 460px, 2.157 * 28vh); /* em tela baixa limita a altura a ~28% */
+  }
+  .hero img {
+    position: absolute; width: 136.36%; left: -19.09%; top: -51.47%; max-width: none; display: block;
+    animation: surgir .9s var(--suave) both;
+  }
+  @keyframes surgir { from { opacity: 0; transform: translateY(8px) scale(.97); } }
+
+  /* ---------- Navegação por categoria (fixa ao rolar, com pílula deslizante) ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(242, 231, 211, .88);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2); backdrop-filter: blur(10px) saturate(1.2);
+    border-bottom: 1px solid transparent;
+    transition: box-shadow .3s, border-color .3s;
+  }
+  nav.sombra { border-color: var(--linha); box-shadow: 0 6px 18px -10px rgba(91, 46, 31, .35); }
+  .abas {
+    position: relative; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    max-width: 760px; margin: 0 auto; padding: 7px 14px;
+  }
+  .abas::-webkit-scrollbar { display: none; }
+  .abas a {
+    position: relative; z-index: 1; flex: none; padding: 6px 13px; border-radius: 999px;
+    border: 1px solid var(--linha); color: var(--chocolate); text-decoration: none;
+    font-size: 13.5px; font-weight: 500; letter-spacing: .02em; white-space: nowrap;
+    transition: color .3s, border-color .3s;
+  }
+  .abas a.ativo { color: var(--creme); border-color: transparent; }
+  .pilula {
+    position: absolute; z-index: 0; top: 7px; bottom: 7px; left: 0; width: 0; border-radius: 999px;
+    background: var(--chocolate); box-shadow: 0 3px 10px -3px rgba(91, 46, 31, .5);
+    transition: transform .45s var(--suave), width .45s var(--suave);
+  }
+
+  /* ---------- Seções ---------- */
+  main { max-width: 760px; margin: 0 auto; padding: 0 14px 8px; }
+  section { padding-top: 22px; }
+  .titulo { position: relative; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .titulo::before, .titulo::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to left, var(--dourado), transparent); }
+  .titulo::after { background: linear-gradient(to right, var(--dourado), transparent); }
+  .titulo svg { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); }
+  h2 {
+    margin: 0; font-family: var(--serif); font-weight: 400; white-space: nowrap;
+    font-size: clamp(18px, 5.4vw, 24px); letter-spacing: .07em; text-transform: uppercase;
+  }
+
+  /* pontinhos dourados piscando de leve */
+  .coroa circle { animation: brilhar 2.4s ease-in-out infinite; }
+  .coroa circle:nth-child(2) { animation-delay: .3s; }
+  .coroa circle:nth-child(3) { animation-delay: .6s; }
+  @keyframes brilhar { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+
+  /* Colunas se adaptam à largura: 2 em celulares, 3–4 deitado/tablet */
+  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+
+  .card {
+    background: var(--creme-claro); border-radius: var(--raio); overflow: hidden;
+    border: 1px solid var(--linha); box-shadow: 0 1px 2px rgba(91, 46, 31, .05), 0 6px 16px -6px rgba(91, 46, 31, .12);
+    display: flex; flex-direction: column; opacity: 0;
+    transition: transform .2s var(--suave), box-shadow .2s;
+  }
+  .card.visivel { opacity: 1; animation: entrar .6s var(--suave) backwards; animation-delay: calc(var(--i, 0) * 70ms); }
+  @keyframes entrar { from { opacity: 0; transform: translateY(16px) scale(.98); } }
+  .card:active { transform: scale(.985); }
+  @media (hover: hover) {
+    .card:hover { box-shadow: 0 2px 4px rgba(91, 46, 31, .06), 0 14px 26px -10px rgba(91, 46, 31, .25); transform: translateY(-2px); }
+    .card:hover .foto img { transform: scale(1.04); }
+  }
+
+  .foto { position: relative; aspect-ratio: 1 / 1; background: #EADDC6; overflow: hidden; }
+  .foto img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    opacity: 0; transition: opacity .35s, transform .6s var(--suave);
+  }
+  .foto.ok img { opacity: 1; }
+  .foto.ok img.trocando { opacity: 0; transform: scale(1.03); }
+  /* brilho de carregamento enquanto a foto não chega */
+  .foto::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .45) 50%, transparent 70%) -150% 0 / 200% 100% no-repeat;
+    animation: carregar 1.3s linear infinite;
+  }
+  .foto.ok::after { display: none; }
+  @keyframes carregar { to { background-position: 150% 0; } }
+
+  .info { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .nome { font-family: var(--serif); font-size: clamp(14.5px, 4.1vw, 16.5px); line-height: 1.2; }
+  .det { font-size: 12px; line-height: 1.3; color: var(--chocolate-suave); }
+
+  .opcoes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .opcoes button {
+    font: 500 11.5px/1.2 var(--sans); color: var(--chocolate);
+    padding: 4px 9px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--linha); background: transparent;
+    transition: background .25s, color .25s, border-color .25s, transform .15s;
+  }
+  .opcoes button:active { transform: scale(.94); }
+  .opcoes button.ativo { background: var(--chocolate); border-color: var(--chocolate); color: var(--creme); }
+
+  .preco {
+    margin-top: auto; padding-top: 6px; color: var(--morango);
+    font-weight: 600; font-size: clamp(17px, 4.8vw, 19px); line-height: 1; letter-spacing: -.01em;
+  }
+  .preco .rs { font-size: .62em; font-weight: 500; margin-right: 2px; vertical-align: .18em; }
+  .preco .cent { font-size: .62em; font-weight: 500; }
+  .preco.pop { animation: pop .35s var(--suave); }
+  @keyframes pop { 40% { transform: scale(1.12); } }
+
+  /* promoção: uma linha discreta, com um brilho leve no valor */
+  .promo {
+    display: flex; align-items: center; gap: 5px;
+    margin-top: 7px; padding-top: 6px; border-top: 1px dashed var(--linha);
+    font-size: 11.5px; color: var(--chocolate-suave);
+  }
+  .promo svg { flex: none; animation: girar 6s linear infinite; }
+  .promo b {
+    font-weight: 600;
+    background: linear-gradient(90deg, var(--chocolate) 35%, var(--dourado) 50%, var(--chocolate) 65%) 0 0 / 250% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: reluzir 3.5s ease-in-out infinite;
+  }
+  @keyframes reluzir { 0% { background-position: 100% 0; } 60%, 100% { background-position: 0 0; } }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  /* ---------- Rodapé ---------- */
+  footer { text-align: center; padding: 18px 16px calc(20px + env(safe-area-inset-bottom)); color: var(--chocolate-suave); }
+  footer .marca { font-family: var(--serif); font-size: 17px; color: var(--chocolate); letter-spacing: .07em; text-transform: uppercase; margin-top: 2px; }
+  footer .sub { font-size: 10.5px; letter-spacing: .28em; text-transform: uppercase; margin-top: 2px; }
+
+  /* ---------- Botão voltar ao topo ---------- */
+  .subir {
+    position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 20;
+    width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
+    background: var(--chocolate); color: var(--creme); display: grid; place-items: center;
+    box-shadow: 0 6px 16px -4px rgba(91, 46, 31, .5);
+    opacity: 0; transform: translateY(12px) scale(.9); pointer-events: none;
+    transition: opacity .3s, transform .3s var(--suave);
+  }
+  .subir.visivel { opacity: 1; transform: none; pointer-events: auto; }
+
+  /* Celular deitado / telas baixas: foto mais achatada */
+  @media (max-height: 500px) and (orientation: landscape) { .foto { aspect-ratio: 4 / 3; } }
+  /* Telas bem estreitas (≤ 329px): card em linha, foto à esquerda */
+  @media (max-width: 329px) {
+    .card { flex-direction: row; }
+    .foto { width: 100px; min-height: 100px; flex: none; aspect-ratio: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .card { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<h1 class="sr-only">Doces da Maria – Confeitaria Artesanal</h1>
+<header class="topo">
+  <div class="hero"><img src="imgs/banner%20horizontal.png" alt="Doces da Maria – Confeitaria Artesanal"></div>
+</header>
+<nav id="nav"><div class="abas" id="abas"></div></nav>
+<main id="app"></main>
+<footer id="rodape"></footer>
+<button class="subir" id="subir" type="button" aria-label="Voltar ao topo">
+  <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 10l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<script src="dados.js"></script>
+<script>
+const src = (f) => "imgs/" + encodeURIComponent(f);
+// Os três pontinhos dourados da coroa do logo
+const coroa = `<svg class="coroa" width="24" height="10" viewBox="0 0 24 10" aria-hidden="true"><circle cx="3.5" cy="7" r="2.1" fill="#C9A35A"/><circle cx="12" cy="2.6" r="2.1" fill="#C9A35A"/><circle cx="20.5" cy="7" r="2.1" fill="#C9A35A"/></svg>`;
+const brilho = `<svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 0l1.3 4.7L12 6l-4.7 1.3L6 12l-1.3-4.7L0 6l4.7-1.3z" fill="#C9A35A"/></svg>`;
+const precoHTML = (n) => {
+  if (n == null) return "Consulte";
+  const [r, c] = n.toFixed(2).split(".");
+  return `<span class="rs">R$</span>${r}<span class="cent">,${c}</span>`;
+};
+
+const nav = document.getElementById("nav");
+const abas = document.getElementById("abas");
+const app = document.getElementById("app");
+
+abas.innerHTML = `<span class="pilula" aria-hidden="true"></span>` +
+  CATEGORIAS.map(c => `<a href="#${c.id}" data-id="${c.id}">${c.nome}</a>`).join("");
+
+app.innerHTML = CATEGORIAS.map(c => `
+  <section id="${c.id}">
+    <div class="titulo">${coroa}<h2>${c.nome}</h2></div>
+    <div class="grade">
+      ${PRODUTOS.map((p, idx) => ({ p, idx })).filter(({ p }) => p.cat === c.id).map(({ p, idx }) => `
+        <article class="card" data-idx="${idx}">
+          <div class="foto"><img src="${src(p.opcoes[0].img)}" alt="${p.nome} – ${p.opcoes[0].rotulo}" loading="lazy"></div>
+          <div class="info">
+            <span class="nome">${p.nome}</span>
+            ${p.detalhe ? `<span class="det">${p.detalhe}</span>` : ""}
+            ${p.opcoes.length > 1
+              ? `<div class="opcoes">${p.opcoes.map((o, k) =>
+                  `<button type="button" data-k="${k}" class="${k === 0 ? "ativo" : ""}" aria-pressed="${k === 0}">${o.rotulo}</button>`).join("")}</div>`
+              : `<span class="det">${p.opcoes[0].rotulo}</span>`}
+            <span class="preco">${precoHTML(p.opcoes[0].preco)}</span>
+            ${p.promo ? `<span class="promo">${brilho}<span>${p.promo.texto} por <b>${brl(p.promo.preco)}</b></span></span>` : ""}
+          </div>
+        </article>`).join("")}
+    </div>
+  </section>`).join("");
+
+document.getElementById("rodape").innerHTML =
+  `${coroa}<div class="marca">Doces da Maria</div><div class="sub">Confeitaria artesanal</div>`;
+
+// Fotos: tira o brilho de carregamento quando a imagem chega
+document.querySelectorAll(".foto img").forEach(img => {
+  const ok = () => img.parentElement.classList.add("ok");
+  img.complete && img.naturalWidth ? ok() : img.addEventListener("load", ok, { once: true });
+});
+
+// Cards entram suavemente ao aparecer na tela (em sequência dentro do mesmo lote)
+const obsCards = new IntersectionObserver((entradas) => {
+  let k = 0;
+  entradas.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.style.setProperty("--i", k++);
+    en.target.classList.add("visivel");
+    obsCards.unobserve(en.target);
+  });
+}, { rootMargin: "0px 0px -8% 0px" });
+document.querySelectorAll(".card").forEach(c => obsCards.observe(c));
+
+// Troca de opção: foto com fade, preço com "pop", botão ativo
+app.addEventListener("click", (e) => {
+  const b = e.target.closest(".opcoes button");
+  if (!b || b.classList.contains("ativo")) return;
+  const card = b.closest(".card");
+  const p = PRODUTOS[card.dataset.idx], o = p.opcoes[b.dataset.k];
+  const img = card.querySelector(".foto img");
+  img.classList.add("trocando");
+  setTimeout(() => {
+    img.onload = () => img.classList.remove("trocando");
+    img.src = src(o.img);
+    img.alt = `${p.nome} – ${o.rotulo}`;
+  }, 180);
+  const preco = card.querySelector(".preco");
+  preco.innerHTML = precoHTML(o.preco);
+  preco.classList.remove("pop"); void preco.offsetWidth; preco.classList.add("pop");
+  card.querySelectorAll(".opcoes button").forEach(x => {
+    x.classList.toggle("ativo", x === b);
+    x.setAttribute("aria-pressed", x === b);
+  });
+});
+
+// Pré-carrega as fotos das outras opções para a troca ser instantânea
+(window.requestIdleCallback || setTimeout)(() => {
+  PRODUTOS.forEach(p => p.opcoes.slice(1).forEach(o => { new Image().src = src(o.img); }));
+}, 1500);
+
+// Aba ativa: pílula desliza até a categoria visível e a barra rola para mantê-la à vista
+const pilula = abas.querySelector(".pilula");
+const links = [...abas.querySelectorAll("a")];
+let atual = CATEGORIAS[0].id, travado = false;
+const ativar = (id, animarBarra = true) => {
+  atual = id;
+  const a = links.find(l => l.dataset.id === id);
+  links.forEach(l => l.classList.toggle("ativo", l === a));
+  pilula.style.width = a.offsetWidth + "px";
+  pilula.style.transform = `translateX(${a.offsetLeft}px)`;
+  if (animarBarra) abas.scrollTo({ left: a.offsetLeft - (abas.clientWidth - a.offsetWidth) / 2, behavior: "smooth" });
+};
+links.forEach(a => a.addEventListener("click", () => {
+  ativar(a.dataset.id);
+  travado = true; setTimeout(() => (travado = false), 900); // evita a pílula "passear" durante a rolagem
+}));
+const obsSecoes = new IntersectionObserver((entradas) => {
+  if (travado) return;
+  entradas.forEach(en => en.isIntersecting && ativar(en.target.id));
+}, { rootMargin: "-35% 0px -60% 0px" });
+document.querySelectorAll("section").forEach(s => obsSecoes.observe(s));
+ativar(atual, false);
+addEventListener("resize", () => ativar(atual, false));
+document.fonts && document.fonts.ready.then(() => ativar(atual, false)); // reajusta após carregar a fonte
+
+// Sombra na barra quando ela gruda no topo + botão voltar ao topo
+const subir = document.getElementById("subir");
+const aoRolar = () => {
+  nav.classList.toggle("sombra", nav.getBoundingClientRect().top <= 0 && scrollY > 0);
+  subir.classList.toggle("visivel", scrollY > innerHeight * .8);
+};
+addEventListener("scroll", aoRolar, { passive: true });
+aoRolar();
+subir.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+</script>
+</body>
+</html>
