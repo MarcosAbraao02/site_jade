@@ -25,8 +25,8 @@ const PRODUTOS = [
   ] },
 
   { cat: "tortas", nome: "Torta de Limão", opcoes: [
-    { rotulo: "2 L", preco: 90, img: "TORTA DE LIMÃO 2L.jpeg" },
-    { rotulo: "Massa amanteigada", preco: 150, img: "TORTA DE LIMÃO MASSA AMANTEIGADA.jpeg" },
+    { rotulo: "2 L", preco: 150, img: "TORTA DE LIMÃO 2L.jpeg" },
+    { rotulo: "Massa amanteigada", preco: 170, img: "TORTA DE LIMÃO MASSA AMANTEIGADA.jpeg" },
   ] },
 
   { cat: "bombons", nome: "Bombom (unidade)", promo: { texto: "Combo 1 de cada", preco: 45 }, opcoes: [
